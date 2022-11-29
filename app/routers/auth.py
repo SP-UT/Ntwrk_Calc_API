@@ -22,7 +22,7 @@ def login(user_credentials: OAuth2PasswordRequestForm = Depends() , db: Session 
             }
         )
         print(login)
-        if login['ChallengeName'] == 'NEW_PASSWORD_REQUIRED':
+        if "ChallengeName" in login.keys() and login['ChallengeName'] == 'NEW_PASSWORD_REQUIRED':
             raise HTTPException(status.HTTP_401_UNAUTHORIZED,
             detail=f"{login['ChallengeName']}")
     except cognito.client.exceptions.ResourceNotFoundException as e:

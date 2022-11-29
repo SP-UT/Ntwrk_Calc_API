@@ -11,15 +11,16 @@ app = FastAPI()
 
 @app.on_event("startup")
 async def startup_event():
-    generate_table()
-    poolid = UserPoolSetup()
-    client_id = create_app_client(poolid)
-    os.environ['COGNITO_POOL_ID'] = poolid
-    os.environ['APP_CLIENT_ID'] = client_id
-    with open("app/user_accts.csv", 'r') as file:
-        csvr = csv.reader(file)
-        for row in csvr:
-            create_user(poolid, row[0], row[1])    
+    print("Startup now.")
+    # generate_table()
+    # poolid = UserPoolSetup()
+    # client_id = create_app_client(poolid)
+    # os.environ['COGNITO_POOL_ID'] = poolid
+    # os.environ['APP_CLIENT_ID'] = client_id
+    # with open("app/user_accts.csv", 'r') as file:
+    #     csvr = csv.reader(file)
+    #     for row in csvr:
+    #         create_user(poolid, row[0], row[1])    
 
 @app.get("/")
 async def root():

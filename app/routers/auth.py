@@ -50,7 +50,6 @@ def login(user_credentials: OAuth2PasswordRequestForm = Depends() , db: Session 
         'token_id' : login['AuthenticationResult']['IdToken']
     }
 
-# @router.post('/passwd', response_model=schemas.ChangePasswordOut)
 @router.post('/passwd', response_model=schemas.ChangePasswordOut)
 def passwd_change(details: schemas.UserChangePassword, db: Session = Depends(db.initialize_db)):
     try:

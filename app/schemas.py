@@ -11,7 +11,6 @@ class ChangePasswordOut(BaseModel):
     password_changed: bool
 
 class UserOut(BaseModel):
-    challenge_name: str
     access_token: str
     token_type: str
     expires_in: int

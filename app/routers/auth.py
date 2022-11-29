@@ -11,6 +11,16 @@ router = APIRouter(
 @router.post('/login', response_model=schemas.UserOut)
 def login(user_credentials: OAuth2PasswordRequestForm = Depends() , db: Session = Depends(db.initialize_db)):
     #table = db.Table(f'{settings.auth_table}')
+    # login = cognito.admin_init_auth(
+    #     UserPoolId=os.environ.get('COGNITO_POOL_ID'),
+    #     ClientId=os.environ.get('APP_CLIENT_ID'),
+    #     AuthFlow='ADMIN_USER_PASSWORD_AUTH',
+    #     AuthParameters={
+    #         'USERNAME': user_credentials.username,
+    #         'PASSWORD': user_credentials.password
+    #     }
+    # )
+    # print(login)
     try:
         login = cognito.admin_init_auth(
             UserPoolId=os.environ.get('COGNITO_POOL_ID'),
@@ -26,12 +36,11 @@ def login(user_credentials: OAuth2PasswordRequestForm = Depends() , db: Session 
             detail=f"Invalid Credentials"
             )
     return {
-        challenge_name : login['ChallengeName'],
-        access_token : login['AuthenticationResult']['AccessToken'],
-        token_type : login['AuthenticationResult']['TokenType'],
-        expires_in : login['AuthenticationResult']['ExpiresIn'],
-        refresh_token : login['AuthenticationResult']['RefreshToken'],
-        token_id : login['AuthenticationResult']['IdToken']
+        'access_token' : login['AuthenticationResult']['AccessToken'],
+        'token_type' : login['AuthenticationResult']['TokenType'],
+        'expires_in' : login['AuthenticationResult']['ExpiresIn'],
+        'refresh_token' : login['AuthenticationResult']['RefreshToken'],
+        'token_id' : login['AuthenticationResult']['IdToken']
     }
 
 # @router.post('/passwd', response_model=schemas.ChangePasswordOut)

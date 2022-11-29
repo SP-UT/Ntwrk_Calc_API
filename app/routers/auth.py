@@ -3,6 +3,7 @@ from fastapi import status, HTTPException, Depends, APIRouter
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from .. import db, schemas, cognito
+from ..config import settings
 
 router = APIRouter(
     tags=['Authentication']
@@ -10,7 +11,6 @@ router = APIRouter(
 
 @router.post('/login', response_model=schemas.UserOut)
 def login(user_credentials: OAuth2PasswordRequestForm = Depends() , db: Session = Depends(db.initialize_db)):
-    #table = db.Table(f'{settings.auth_table}')
     try:
         login = cognito.admin_init_auth(
             UserPoolId=os.environ.get('COGNITO_POOL_ID'),
@@ -21,7 +21,6 @@ def login(user_credentials: OAuth2PasswordRequestForm = Depends() , db: Session 
                 'PASSWORD': user_credentials.password
             }
         )
-        print(login)
         if "ChallengeName" in login.keys() and login['ChallengeName'] == 'NEW_PASSWORD_REQUIRED':
             raise HTTPException(status.HTTP_401_UNAUTHORIZED,
             detail=f"{login['ChallengeName']}")
@@ -54,6 +53,7 @@ def login(user_credentials: OAuth2PasswordRequestForm = Depends() , db: Session 
 # @router.post('/passwd', response_model=schemas.ChangePasswordOut)
 # def passwd_change(details: schemas.UserChangePassword, db: Session = Depends(db.initialize_db)):
 #     try:
+# Get user details and identify if this is the right user.
 #         cognito.user_change_password(
 #             token = details.
 #             curr_password = 

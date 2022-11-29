@@ -1,9 +1,7 @@
-from typing import Optional
 from pydantic import BaseModel
-from datetime import datetime
 
 class UserChangePassword(BaseModel):
-    username: str
+    token: str
     password: str
     new_password: str
 

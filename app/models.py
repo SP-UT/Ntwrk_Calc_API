@@ -39,10 +39,8 @@ def generate_table():
     ddb = initialize_db()
     generate_networks(ddb,settings.ddb_table)
     generate_networks(ddb,settings.cidr_table)
-    generate_networks(ddb,settings.auth_table)
 
 def drop_table():
     ddb = initialize_db()
     drop_networks(ddb,settings.ddb_table)
     drop_networks(ddb,settings.cidr_table)
-    drop_networks(ddb,settings.auth_table)

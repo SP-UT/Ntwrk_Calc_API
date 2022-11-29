@@ -45,7 +45,7 @@ Network Client `Ntwrk_Calc_API` is created upon startup.
 The Client ID is available as `APP_CLIENT_ID` environment variable upon successful application startup.
 
 #### Cleanup
-The `shutdown` event of FASTAPI will delete the `DDB_TABLE` and the Cognito IDP environment setup.
+The `shutdown` event of FASTAPI will delete the `DDB_TABLE`, `CIDR_TABLE`, `AUTH_TABLE` and the Cognito IDP environment setup.
 
 #### Start the API
 ```

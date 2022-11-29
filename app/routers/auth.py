@@ -11,16 +11,6 @@ router = APIRouter(
 @router.post('/login', response_model=schemas.UserOut)
 def login(user_credentials: OAuth2PasswordRequestForm = Depends() , db: Session = Depends(db.initialize_db)):
     #table = db.Table(f'{settings.auth_table}')
-    # login = cognito.admin_init_auth(
-    #     UserPoolId=os.environ.get('COGNITO_POOL_ID'),
-    #     ClientId=os.environ.get('APP_CLIENT_ID'),
-    #     AuthFlow='ADMIN_USER_PASSWORD_AUTH',
-    #     AuthParameters={
-    #         'USERNAME': user_credentials.username,
-    #         'PASSWORD': user_credentials.password
-    #     }
-    # )
-    # print(login)
     try:
         login = cognito.admin_init_auth(
             UserPoolId=os.environ.get('COGNITO_POOL_ID'),
@@ -31,10 +21,28 @@ def login(user_credentials: OAuth2PasswordRequestForm = Depends() , db: Session 
                 'PASSWORD': user_credentials.password
             }
         )
-    except Exception as e:
-        raise HTTPException(status.HTTP_403_FORBIDDEN, 
-            detail=f"Invalid Credentials"
-            )
+        print(login)
+        if login['ChallengeName'] == 'NEW_PASSWORD_REQUIRED':
+            raise HTTPException(status.HTTP_401_UNAUTHORIZED,
+            detail=f"{login['ChallengeName']}")
+    except cognito.client.exceptions.ResourceNotFoundException as e:
+            raise HTTPException(status.HTTP_400_BAD_REQUEST,
+            detail="ResourceNotFoundException")
+    except cognito.client.exceptions.InvalidParameterException as e:
+            raise HTTPException(status.HTTP_400_BAD_REQUEST,
+            detail="InvalidParameterException")
+    except cognito.client.exceptions.NotAuthorizedException as e:
+            raise HTTPException(status.HTTP_401_UNAUTHORIZED,
+            detail="NotAuthorizedException")
+    except cognito.client.exceptions.TooManyRequestsException as e:
+            raise HTTPException(status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="TooManyRequestsException")
+    except cognito.client.exceptions.InternalErrorException as e:
+            raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="InternalErrorException")
+    except cognito.client.exceptions.ForbiddenException as e:
+            raise HTTPException(status.HTTP_401_UNAUTHORIZED,
+            detail="ForbiddenException")
     return {
         'access_token' : login['AuthenticationResult']['AccessToken'],
         'token_type' : login['AuthenticationResult']['TokenType'],

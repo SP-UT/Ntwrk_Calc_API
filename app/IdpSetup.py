@@ -38,7 +38,11 @@ def DelPoolSetup():
 
 def create_app_client(poolid):
     try:
-        app_client = client.create_user_pool_client(UserPoolId=poolid,ClientName='Ntwrk_Calc_API')
+        app_client = client.create_user_pool_client(
+            UserPoolId=poolid,
+            ClientName='Ntwrk_Calc_API',
+            ExplicitAuthFlows=['ADMIN_NO_SRP_AUTH','USER_PASSWORD_AUTH'],
+        )
     except Exception as e:
         print(e)
     return(app_client['UserPoolClient']['ClientId'])

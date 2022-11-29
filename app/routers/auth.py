@@ -51,11 +51,14 @@ def login(user_credentials: OAuth2PasswordRequestForm = Depends() , db: Session 
     }
 
 # @router.post('/passwd', response_model=schemas.ChangePasswordOut)
-# def passwd_change(details: schemas.UserChangePassword, db: Session = Depends(db.initialize_db)):
-#     try:
-# Get user details and identify if this is the right user.
-#         cognito.user_change_password(
-#             token = details.
-#             curr_password = 
-#             new_password = 
-#         )
+@router.post('/passwd', response_model=schemas.ChangePasswordOut)
+def passwd_change(details: schemas.UserChangePassword, db: Session = Depends(db.initialize_db)):
+    try:
+        cognito.user_change_password(
+            token = details.token,
+            curr_password = details.curr_password,
+            new_password = details.new_password
+        )
+    except Exception as e:
+        print(e)
+    return { "password_changed": True }

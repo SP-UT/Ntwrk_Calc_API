@@ -1,5 +1,5 @@
 # Ntwrk_Calc_API
- Network Address Space Mgmt API
+ Network Address Space Mgmt API uses AWS Cognito for user authentication and AWS DynamoDB Tables as backend.
 
 ### Application Environment Setup
 

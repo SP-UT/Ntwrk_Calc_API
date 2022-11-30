@@ -9,8 +9,9 @@ python --version
 Python 3.10.1
 ```
 
-#### Activate Virtual Environment
+#### Create / Activate Virtual Environment
 ```
+python3 -m venv ntwrk_calc_api
 source ntwrk_calc_api/bin/activate
 ```
 
@@ -28,7 +29,6 @@ pip install -r requirements.txt
 ```
 export DDB_TABLE=[Default Table Name]
 export CIDR_TABLE=[CIDR Table Name]
-export AUTH_TABLE=[AUTH Table Name]
 export REGION_NAME=[AWS REGION HERE]
 export AWS_ACCESS_KEY=[AWS ACCESS KEY HERE]
 export AWS_SECRET_ACCESS_KEY=[AWS SECRET ACCESS KEY HERE]

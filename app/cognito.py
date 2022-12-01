@@ -51,12 +51,9 @@ def is_token_expired(token: str, region: str, idp_pool: str, client_id: str):
             idp_pool,
             app_client_id=client_id
         )['exp']
-    except Exception as e:
+    except client.cognitojwt.exceptions.CognitoJWTException as e:
         print(e)
-    if time.time() > token_exp:
-        return { "token_expired": True }
-    else:
-        return { "token_expired": False }
+    return { "token_expired": True }
 
 def user_change_password(token: str, curr_password: str, new_password: str):
     passwd_change = client.change_password(

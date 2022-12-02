@@ -51,7 +51,7 @@ def is_token_expired(token: str, region: str, idp_pool: str, client_id: str):
             client_id
         )['exp']
         token_status = { "token_expired": False }
-    except client.cognitojwt.exceptions.CognitoJWTException as e:
+    except Exception as e:
         token_status = { "token_expired": True }
     return(token_status)
 

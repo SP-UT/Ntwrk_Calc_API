@@ -23,9 +23,6 @@ class GetAllCIDRs(BaseModel):
     next_available_ip: str
     total_available_ips: int
 
-
-
-# next_available_ip can be a get router 
 class UserOut(BaseModel):
     access_token: str
     token_type: str

@@ -36,12 +36,11 @@ def validate_user_id(token: str, region: str, idp_pool: str, client_id: str):
             idp_pool,
             client_id
         )['username']
+        if idp_username == jwt_username:
+         status = {"user_verified": True}
     except Exception as e:
-        print(e)
-    if idp_username == jwt_username:
-        return {"user_verified": True}
-    else:
-        return {"user_verified": False}
+        status = {"user_verified": False}
+    return(status)
 
 def is_token_expired(token: str, region: str, idp_pool: str, client_id: str):
     try:
@@ -51,9 +50,10 @@ def is_token_expired(token: str, region: str, idp_pool: str, client_id: str):
             idp_pool,
             client_id
         )['exp']
+        token_status = { "token_expired": False }
     except client.cognitojwt.exceptions.CognitoJWTException as e:
-        print(e)
-    return { "token_expired": False }
+        token_status = { "token_expired": True }
+    return(token_status)
 
 def user_change_password(token: str, curr_password: str, new_password: str):
     passwd_change = client.change_password(

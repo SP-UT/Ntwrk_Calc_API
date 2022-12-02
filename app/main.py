@@ -1,7 +1,7 @@
 import os, csv
 from fastapi import FastAPI
 from .db import initialize_db
-from .routers import auth
+from .routers import auth, cidrs
 from .models import generate_table, drop_table
 from .IdpSetup import UserPoolSetup, DelPoolSetup, create_app_client, create_user
 
@@ -27,6 +27,8 @@ async def root():
     return {"message": "Hello World"}
 
 app.include_router(auth.router)
+app.include_router(cidrs.router)
+
 
 @app.on_event("shutdown")
 def shutdown_event():

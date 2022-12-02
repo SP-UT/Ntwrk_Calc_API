@@ -10,7 +10,7 @@ router = APIRouter(
     )
 
 @router.post('/login', response_model=schemas.UserOut)
-def login(user_credentials: OAuth2PasswordRequestForm = Depends() , db: Session = Depends(db.initialize_db)):
+def login(user_credentials: OAuth2PasswordRequestForm = Depends()):
     try:
         login = cognito.admin_init_auth(
             UserPoolId=os.environ.get('COGNITO_POOL_ID'),
@@ -51,7 +51,7 @@ def login(user_credentials: OAuth2PasswordRequestForm = Depends() , db: Session 
     }
 
 @router.post('/passwd', response_model=schemas.ChangePasswordOut)
-def passwd_change(details: schemas.UserChangePassword, db: Session = Depends(db.initialize_db)):
+def passwd_change(details: schemas.UserChangePassword ):
     try:
         cognito.user_change_password(
             token = details.token,

@@ -8,6 +8,24 @@ class UserChangePassword(BaseModel):
 class ChangePasswordOut(BaseModel):
     password_changed: bool
 
+class NewCIDROut(BaseModel):
+    cidr_created: bool
+
+class NewCIDR(BaseModel):
+    shrt_name: str
+    description: str
+    cidr: str
+
+class GetAllCIDRs(BaseModel):
+    shrt_name: str
+    description: str
+    cidr: str
+    next_available_ip: str
+    total_available_ips: int
+
+
+
+# next_available_ip can be a get router 
 class UserOut(BaseModel):
     access_token: str
     token_type: str

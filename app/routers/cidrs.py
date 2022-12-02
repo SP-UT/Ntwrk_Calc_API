@@ -72,4 +72,3 @@ async def get_cidr(shrt_name: str, credentials: HTTPAuthorizationCredentials= De
     else:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED,
         detail="Invalid Credentials")
-        print(response['Item'])

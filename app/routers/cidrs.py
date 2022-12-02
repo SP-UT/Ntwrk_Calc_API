@@ -1,4 +1,5 @@
 import os
+from typing import List
 from ipaddress import IPv4Network as ip
 from fastapi import status, HTTPException, Depends, APIRouter
 from .. import db, schemas, cognito
@@ -20,7 +21,6 @@ async def cidrs(cidr: schemas.NewCIDR, credentials: HTTPAuthorizationCredentials
         idp_pool = os.environ.get('COGNITO_POOL_ID'), 
         client_id = os.environ.get('APP_CLIENT_ID')
     )
-    print(jwt_user)
     if jwt_user['user_verified']:
         table = db.Table(f'{settings.cidr_table}')
         response = table.put_item(
@@ -37,15 +37,20 @@ async def cidrs(cidr: schemas.NewCIDR, credentials: HTTPAuthorizationCredentials
         raise HTTPException(status.HTTP_401_UNAUTHORIZED,
         detail={ 'cidr_created': False })
 
-@router.get('/cidrs')
+@router.get('/cidrs', response_model=List[schemas.GetAllCIDRs])
 async def cidrs(credentials: HTTPAuthorizationCredentials= Depends(security), db: Session = Depends(db.initialize_db)):
-    table = db.Table(f'{settings.cidr_table}')
-    response = table.put_item(
-    Item = { 
-        'shrt_name': 'Kelvin Galabuzi',
-        'Email': 'kelvingalabuzi@handson.cloud'
-        }
+    jwt_user = cognito.validate_user_id(
+        token = credentials.credentials, 
+        region = f'{settings.region_name}', 
+        idp_pool = os.environ.get('COGNITO_POOL_ID'), 
+        client_id = os.environ.get('APP_CLIENT_ID')
     )
-    print(response)
-    # print(credentials.credentials)
+    if jwt_user['user_verified']:
+        table = db.Table(f'{settings.cidr_table}')
+        response = table.scan()
+        return (response['Items'])
+
+    else:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED,
+        detail="Invalid Credentials")
     # return (credentials.credentials)

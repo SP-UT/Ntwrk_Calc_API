@@ -79,6 +79,73 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Create New CIDR",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"shrt_name\": \"class_C\",\n    \"description\": \"Primary Class C Private CIDR\",\n    \"cidr\": \"192.168.0.0/16\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/cidrs",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"cidrs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Available CIDRs",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/cidrs",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"cidrs"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

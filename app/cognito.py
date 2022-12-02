@@ -34,7 +34,7 @@ def validate_user_id(token: str, region: str, idp_pool: str, client_id: str):
             token,
             region,
             idp_pool,
-            app_client_id=client_id
+            client_id
         )['username']
     except Exception as e:
         print(e)
@@ -49,7 +49,7 @@ def is_token_expired(token: str, region: str, idp_pool: str, client_id: str):
             token,
             region,
             idp_pool,
-            app_client_id=client_id
+            client_id
         )['exp']
     except client.cognitojwt.exceptions.CognitoJWTException as e:
         print(e)

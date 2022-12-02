@@ -21,7 +21,7 @@
 						},
 						{
 							"key": "password",
-							"value": "",
+							"value": "us-east-1_WUTjUAobB",
 							"type": "text"
 						}
 					]
@@ -142,6 +142,36 @@
 					"port": "8000",
 					"path": [
 						"cidrs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get One CIDR",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/cidrs/class_A",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"cidrs",
+						"class_A"
 					]
 				}
 			},

@@ -23,6 +23,13 @@ class GetAllCIDRs(BaseModel):
     next_available_ip: str
     total_available_ips: int
 
+class UpdateCIDR(BaseModel):
+    shrt_name: str
+    description: str
+
+class UpdateCIDROut(BaseModel):
+    cidr_updated: bool
+
 class UserOut(BaseModel):
     access_token: str
     token_type: str

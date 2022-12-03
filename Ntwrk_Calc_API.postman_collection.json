@@ -21,7 +21,7 @@
 						},
 						{
 							"key": "password",
-							"value": "us-east-1_WUTjUAobB",
+							"value": "",
 							"type": "text"
 						}
 					]
@@ -163,7 +163,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8000/cidrs/class_A",
+					"raw": "http://localhost:8000/cidrs/class_C",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -171,7 +171,76 @@
 					"port": "8000",
 					"path": [
 						"cidrs",
-						"class_A"
+						"class_C"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update One CIDR Information",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"shrt_name\": \"class_C\",\n    \"description\": \"Primary Class C Private CIDR\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/cidrs/class_C",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"cidrs",
+						"class_C"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete One CIDR",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/cidrs/class_C",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"cidrs",
+						"class_C"
 					]
 				}
 			},

@@ -245,6 +245,25 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Health Page",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8000/health",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

@@ -1,5 +1,12 @@
 from pydantic import BaseModel
+from typing import List
 
+class HealthPage(BaseModel):
+    name: str
+    subsystems: List
+    date: str
+    status: str
+    
 class UserChangePassword(BaseModel):
     token: str
     password: str

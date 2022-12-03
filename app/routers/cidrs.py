@@ -112,7 +112,12 @@ async def del_cidr(shrt_name: str, credentials: HTTPAuthorizationCredentials= De
     )
     if jwt_user['user_verified']:
         table = db.Table(f'{settings.cidr_table}')
-        get_item = table.get_item(Key={'shrt_name': shrt_name})
+        get_item = table.get_item(
+            Key = 
+                {
+                    'shrt_name': shrt_name
+                }
+            )
         if 'Item' in get_item:
             del_item = table.delete_item(
                 Key = 

@@ -36,6 +36,14 @@ def DelPoolSetup():
         else:
             print('CGNTO-IDP Pool already deleted.')
 
+def PoolExists():
+    user_pools = client.list_user_pools(MaxResults=10)['UserPools']
+    for pool in user_pools:
+        if 'CGNTO-IDP' in pool['Name']:
+            return ({"pool_exists": True})
+        else:
+            return ({"pool_exists": False})
+
 def create_app_client(poolid):
     try:
         app_client = client.create_user_pool_client(

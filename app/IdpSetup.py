@@ -75,3 +75,20 @@ def create_user(Pool_id,uname,email,maction='RESEND',delivery=['EMAIL']):
         )
     except Exception as e:
         print(e)
+        
+def describe_client(poolId, client_id):
+    try:
+        response = client.describe_user_pool_client(
+            UserPoolId=poolId,
+            ClientId=client_id
+        )
+    except Exception as e:
+        print(e)
+    return(response)
+
+def validate_client_id(poolId, client_id):
+    client_details = describe_client(poolId, client_id)
+    if client_id == client_details['UserPoolClient']['ClientId']:
+        return({"idp_client_valid": True})
+    else:
+        return({"idp_client_valid": False})

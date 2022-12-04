@@ -1,10 +1,11 @@
 from pydantic import BaseModel
 from typing import List
+from datetime import datetime
 
 class HealthPage(BaseModel):
     name: str
     subsystems: List
-    date: str
+    date: datetime
     status: str
     
 class UserChangePassword(BaseModel):

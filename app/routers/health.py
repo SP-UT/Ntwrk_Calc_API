@@ -2,7 +2,7 @@ import os
 from datetime import datetime
 from fastapi import status, HTTPException, Depends, APIRouter, Response
 from sqlalchemy.orm import Session
-from ..IdpSetup import PoolExists
+from ..IdpSetup import PoolExists, validate_client_id
 from ..models import does_table_exist
 from ..config import settings
 from .. import schemas, db
@@ -17,7 +17,7 @@ async def health(response: Response):
     cidr_table = does_table_exist(ddb, f'{settings.cidr_table}')
     ddb_table = does_table_exist(ddb, f'{settings.ddb_table}')
     idp = PoolExists()
-    print (cidr_table, ddb_table, idp)
+    client_details = validate_client_id(os.environ.get('COGNITO_POOL_ID'), os.environ.get('APP_CLIENT_ID'))
     if cidr_table['table_exists'] and ddb_table['table_exists'] and idp['pool_exists']:
         return(
             {
@@ -26,10 +26,13 @@ async def health(response: Response):
                     {
                         f'{settings.cidr_table}': cidr_table,
                         f'{settings.ddb_table}': ddb_table,
-                        os.environ.get('COGNITO_POOL_ID'): idp
+                        os.environ.get('COGNITO_POOL_ID'): [
+                                idp,
+                                client_details
+                            ]
                     }
                 ],
-                'date': datetime.now().strftime("%Y-%m-%d %I:%M:%s %p"),
+                'date': datetime.now(),
                 'status': 'Good'
             }
         )
@@ -42,10 +45,13 @@ async def health(response: Response):
                     {
                         f'{settings.cidr_table}': cidr_table,
                         f'{settings.ddb_table}': ddb_table,
-                        os.environ.get('COGNITO_POOL_ID'): idp
+                        os.environ.get('COGNITO_POOL_ID'): [
+                                idp,
+                                client_details
+                            ]
                     }
                 ],
-                'date': datetime.now().strftime("%Y-%m-%d %I:%M:%s %p"),
+                'date': datetime.now(),
                 'status': 'Check Dependencies'
             }
         )

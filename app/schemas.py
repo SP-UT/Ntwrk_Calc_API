@@ -48,11 +48,10 @@ class UserOut(BaseModel):
 class NewNetwork(BaseModel):
     shrt_name: str
     cidr_name: str
-    subnet_mask: str
+    subnet_mask: int
     description: str
 
 class NewNetworkOut(BaseModel):
     shrt_name: str
-    cidr_name: str
-    subnet_mask: str
-    description: str
+    network: str
+    

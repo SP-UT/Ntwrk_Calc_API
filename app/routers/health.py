@@ -18,7 +18,7 @@ async def health(response: Response):
     ddb_table = does_table_exist(ddb, f'{settings.ddb_table}')
     idp = PoolExists()
     client_details = validate_client_id(os.environ.get('COGNITO_POOL_ID'), os.environ.get('APP_CLIENT_ID'))
-    if cidr_table['table_exists'] and ddb_table['table_exists'] and idp['pool_exists']:
+    if cidr_table['table_exists'] and ddb_table['table_exists'] and idp['identity_setup_valid']:
         return(
             {
                 'name': "Ntwrk_Calc_API",
@@ -26,7 +26,7 @@ async def health(response: Response):
                     {
                         f'{settings.cidr_table}': cidr_table,
                         f'{settings.ddb_table}': ddb_table,
-                        os.environ.get('COGNITO_POOL_ID'): [
+                        'Identity': [
                                 idp,
                                 client_details
                             ]
@@ -45,7 +45,7 @@ async def health(response: Response):
                     {
                         f'{settings.cidr_table}': cidr_table,
                         f'{settings.ddb_table}': ddb_table,
-                        os.environ.get('COGNITO_POOL_ID'): [
+                        'Identity': [
                                 idp,
                                 client_details
                             ]

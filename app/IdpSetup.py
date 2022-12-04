@@ -40,9 +40,9 @@ def PoolExists():
     user_pools = client.list_user_pools(MaxResults=10)['UserPools']
     for pool in user_pools:
         if 'CGNTO-IDP' in pool['Name']:
-            return ({"pool_exists": True})
+            return ({"identity_setup_valid": True})
         else:
-            return ({"pool_exists": False})
+            return ({"identity_setup_valid": False})
 
 def create_app_client(poolid):
     try:
@@ -89,6 +89,6 @@ def describe_client(poolId, client_id):
 def validate_client_id(poolId, client_id):
     client_details = describe_client(poolId, client_id)
     if client_id == client_details['UserPoolClient']['ClientId']:
-        return({"idp_client_valid": True})
+        return({"identity_client_valid": True})
     else:
-        return({"idp_client_valid": False})
+        return({"identity_client_valid": False})

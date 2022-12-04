@@ -44,3 +44,15 @@ class UserOut(BaseModel):
     expires_in: int
     refresh_token: str
     token_id: str
+
+class NewNetwork(BaseModel):
+    shrt_name: str
+    cidr_name: str
+    subnet_mask: str
+    description: str
+
+class NewNetworkOut(BaseModel):
+    shrt_name: str
+    cidr_name: str
+    subnet_mask: str
+    description: str

@@ -53,12 +53,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8000/passwd",
-					"protocol": "http",
+					"raw": "{{NTWRK_CALC_API_ENDPOINT}}/passwd",
 					"host": [
-						"localhost"
+						"{{NTWRK_CALC_API_ENDPOINT}}"
 					],
-					"port": "8000",
 					"path": [
 						"passwd"
 					],

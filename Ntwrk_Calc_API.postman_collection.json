@@ -93,7 +93,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"shrt_name\": \"class_C\",\n    \"description\": \"Primary Class C Private CIDR\",\n    \"cidr\": \"192.168.0.0/16\"\n}",
+					"raw": "{\n    \"shrt_name\": \"class_A\",\n    \"description\": \"Primary Class A Private CIDR\",\n    \"cidr\": \"10.0.0.0/8\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -244,6 +244,42 @@
 					],
 					"path": [
 						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create New Network",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"shrt_name\": \"IaC VPC\",\n    \"cidr_name\": \"class_C\",\n    \"description\": \"IaC VPC in N. Virginia\",\n    \"subnet_mask\": 24\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{NTWRK_CALC_API_ENDPOINT}}/networks",
+					"host": [
+						"{{NTWRK_CALC_API_ENDPOINT}}"
+					],
+					"path": [
+						"networks"
 					]
 				}
 			},

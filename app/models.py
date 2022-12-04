@@ -30,7 +30,6 @@ def generate_networks(ddb,table_name):
 def does_table_exist(ddb,table_name):
     client = boto3.client('dynamodb', region_name=f'{settings.region_name}')
     existing_tables = client.list_tables()
-    print(existing_tables['TableNames'])
     if table_name in existing_tables['TableNames']:
         return({"table_exists": True })
     else:

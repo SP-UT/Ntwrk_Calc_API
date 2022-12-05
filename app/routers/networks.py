@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 from typing import List
 from ipaddress import IPv4Network as ip
 from fastapi import status, HTTPException, Depends, APIRouter, Response
@@ -38,7 +39,8 @@ async def cidrs(new_ntwrk: schemas.NewNetwork, credentials: HTTPAuthorizationCre
                 'description': new_ntwrk.description,
                 'network': network,
                 'total_ips' : ip(network).num_addresses,
-                'in_use' : False
+                'in_use' : False,
+                'date': datetime.now()
                 }
             )
             cidr_update_resp = cidr_table.put_item(

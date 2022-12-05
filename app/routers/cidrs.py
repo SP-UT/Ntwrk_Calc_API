@@ -23,6 +23,10 @@ async def cidrs(cidr: schemas.NewCIDR, credentials: HTTPAuthorizationCredentials
     )
     if jwt_user['user_verified']:
         table = db.Table(f'{settings.cidr_table}')
+        cidr_resp = table.get_item(Key={'shrt_name': cidr.shrt_name})
+        if 'Item' in cidr_resp:
+            raise HTTPException(status.HTTP_409_CONFLICT,
+            detail=f"{cidr.shrt_name} Already Exists")
         response = table.put_item(
         Item = { 
             'shrt_name': cidr.shrt_name,

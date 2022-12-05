@@ -54,4 +54,8 @@ class NewNetwork(BaseModel):
 class NewNetworkOut(BaseModel):
     shrt_name: str
     network: str
+
+class NetworkUsageStatus(BaseModel):
+    in_use: bool
+    ntwrk_id: str
     

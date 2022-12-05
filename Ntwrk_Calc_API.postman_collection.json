@@ -321,6 +321,61 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Get One Network",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{NTWRK_CALC_API_ENDPOINT}}/networks/BastionVPC",
+					"host": [
+						"{{NTWRK_CALC_API_ENDPOINT}}"
+					],
+					"path": [
+						"networks",
+						"BastionVPC"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Networks",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{NTWRK_CALC_API_ENDPOINT}}/networks",
+					"host": [
+						"{{NTWRK_CALC_API_ENDPOINT}}"
+					],
+					"path": [
+						"networks"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"variable": [

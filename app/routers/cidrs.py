@@ -17,32 +17,33 @@ security = HTTPBearer()
 async def cidrs(cidr: schemas.NewCIDR, credentials: HTTPAuthorizationCredentials= Depends(security), db: Session = Depends(db.initialize_db)):
     if (' ' in cidr.shrt_name) == True:
         raise HTTPException(status.HTTP_400_BAD_REQUEST,
-        detail=f"{cidr.shrt_name} Should be a contiguous string.")
-    jwt_user = cognito.validate_user_id(
-        token = credentials.credentials, 
-        region = f'{settings.region_name}', 
-        idp_pool = os.environ.get('COGNITO_POOL_ID'), 
-        client_id = os.environ.get('APP_CLIENT_ID')
-    )
-    if jwt_user['user_verified']:
-        table = db.Table(f'{settings.cidr_table}')
-        cidr_resp = table.get_item(Key={'shrt_name': cidr.shrt_name})
-        if 'Item' in cidr_resp:
-            raise HTTPException(status.HTTP_409_CONFLICT,
-            detail=f"{cidr.shrt_name} Already Exists")
-        response = table.put_item(
-        Item = { 
-            'shrt_name': cidr.shrt_name,
-            'description': cidr.description,
-            'cidr': cidr.cidr,
-            'next_available_ip': f'{ip(cidr.cidr)[0]}', 
-            'total_available_ips' : ip(cidr.cidr).num_addresses
-            }
-        )
-        return { 'cidr_created': True }
+        detail=f"{cidr.shrt_name} should be a contiguous string.")
     else:
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED,
-        detail={ 'cidr_created': False })
+        jwt_user = cognito.validate_user_id(
+            token = credentials.credentials, 
+            region = f'{settings.region_name}', 
+            idp_pool = os.environ.get('COGNITO_POOL_ID'), 
+            client_id = os.environ.get('APP_CLIENT_ID')
+        )
+        if jwt_user['user_verified']:
+            table = db.Table(f'{settings.cidr_table}')
+            cidr_resp = table.get_item(Key={'shrt_name': cidr.shrt_name})
+            if 'Item' in cidr_resp:
+                raise HTTPException(status.HTTP_409_CONFLICT,
+                detail=f"{cidr.shrt_name} Already Exists")
+            response = table.put_item(
+            Item = { 
+                'shrt_name': cidr.shrt_name,
+                'description': cidr.description,
+                'cidr': cidr.cidr,
+                'next_available_ip': f'{ip(cidr.cidr)[0]}', 
+                'total_available_ips' : ip(cidr.cidr).num_addresses
+                }
+            )
+            return { 'cidr_created': True }
+        else:
+            raise HTTPException(status.HTTP_401_UNAUTHORIZED,
+            detail={ 'cidr_created': False })
 
 @router.get('/cidrs', response_model=List[schemas.GetAllCIDRs])
 async def cidrs(credentials: HTTPAuthorizationCredentials= Depends(security), db: Session = Depends(db.initialize_db)):
@@ -56,6 +57,7 @@ async def cidrs(credentials: HTTPAuthorizationCredentials= Depends(security), db
         table = db.Table(f'{settings.cidr_table}')
         response = table.scan()
         return (response['Items'])
+
     else:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED,
         detail="Invalid Credentials")

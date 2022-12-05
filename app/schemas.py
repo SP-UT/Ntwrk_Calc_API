@@ -23,6 +23,7 @@ class NewCIDR(BaseModel):
     shrt_name: str
     description: str
     cidr: str
+    in_use: Optional[bool] = False
 
 class GetAllCIDRs(BaseModel):
     shrt_name: str

@@ -29,7 +29,6 @@ async def new_ntwrks(new_ntwrk: schemas.NewNetwork, credentials: HTTPAuthorizati
         if jwt_user['user_verified']:
             ddb_table = db.Table(f'{settings.ddb_table}')
             ddb_resp = ddb_table.get_item(Key={'shrt_name': new_ntwrk.shrt_name})
-            print(ddb_resp['Item'])
             if 'Item' in ddb_resp:
                 raise HTTPException(status.HTTP_409_CONFLICT,
                 detail=f"{new_ntwrk.shrt_name} Already Exists")
@@ -55,7 +54,8 @@ async def new_ntwrks(new_ntwrk: schemas.NewNetwork, credentials: HTTPAuthorizati
                         'description': cidr_resp['Item']['description'],
                         'cidr': cidr_resp['Item']['cidr'],
                         'next_available_ip': f'{ip(network)[-1] + 1}', 
-                        'total_available_ips' : cidr_resp['Item']['total_available_ips'] - ip(network).num_addresses
+                        'total_available_ips' : cidr_resp['Item']['total_available_ips'] - ip(network).num_addresses,
+                        'in_use': True
                         }
                     )
                 return { 'shrt_name': new_ntwrk.shrt_name,'network': network }

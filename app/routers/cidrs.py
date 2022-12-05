@@ -37,7 +37,8 @@ async def cidrs(cidr: schemas.NewCIDR, credentials: HTTPAuthorizationCredentials
                 'description': cidr.description,
                 'cidr': cidr.cidr,
                 'next_available_ip': f'{ip(cidr.cidr)[0]}', 
-                'total_available_ips' : ip(cidr.cidr).num_addresses
+                'total_available_ips' : ip(cidr.cidr).num_addresses,
+                'in_use': cidr.in_use
                 }
             )
             return { 'cidr_created': True }
@@ -127,7 +128,10 @@ async def del_cidr(shrt_name: str, credentials: HTTPAuthorizationCredentials= De
                     'shrt_name': shrt_name
                 }
             )
-        if 'Item' in get_item:
+        if get_item['Item']['in_use']:
+            raise HTTPException(status.HTTP_412_PRECONDITION_FAILED,
+            detail=f"CIDR {shrt_name} is in use - CANNOT DELETE.")
+        elif 'Item' in get_item:
             del_item = table.delete_item(
                 Key = 
                     {

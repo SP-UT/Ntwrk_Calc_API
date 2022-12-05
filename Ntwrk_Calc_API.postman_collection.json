@@ -184,7 +184,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"shrt_name\": \"class_C\",\n    \"description\": \"Primary Class C Private CIDR\"\n}",
+					"raw": "{\n    \"in_use\": \"False\",\n    \"description\": \"CIDR description\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -266,7 +266,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"shrt_name\": \"Bastion VPC\",\n    \"cidr_name\": \"class_A\",\n    \"description\": \"Bastion VPC in N. Virginia\",\n    \"subnet_mask\": 24,\n    \"in_use\": true\n}",
+					"raw": "{\n    \"shrt_name\": \"IaC_VPC\",\n    \"cidr_name\": \"class_C\",\n    \"description\": \"IaC VPC in N. Virginia\",\n    \"subnet_mask\": 24,\n    \"in_use\": true\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -302,7 +302,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"shrt_name\": \"BastionVPC\",\n    \"in_use\": true,\n    \"ntwrk_id\": \"vpc-236q328738wus82eu\"\n}",
+					"raw": "{\n    \"in_use\": false\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -310,13 +310,13 @@
 					}
 				},
 				"url": {
-					"raw": "{{NTWRK_CALC_API_ENDPOINT}}/networks/BastionVPC",
+					"raw": "{{NTWRK_CALC_API_ENDPOINT}}/networks/IaC_VPC",
 					"host": [
 						"{{NTWRK_CALC_API_ENDPOINT}}"
 					],
 					"path": [
 						"networks",
-						"BastionVPC"
+						"IaC_VPC"
 					]
 				}
 			},
@@ -372,6 +372,34 @@
 					],
 					"path": [
 						"networks"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete One Network",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{NTWRK_CALC_API_ENDPOINT}}/networks/IaC_VPC",
+					"host": [
+						"{{NTWRK_CALC_API_ENDPOINT}}"
+					],
+					"path": [
+						"networks",
+						"IaC_VPC"
 					]
 				}
 			},

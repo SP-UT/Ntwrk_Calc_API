@@ -97,8 +97,9 @@ async def update_cidr(shrt_name: str, cidr: schemas.UpdateCIDR, credentials: HTT
         if 'Item' in response:
             update_cidr = table.put_item(
                 Item = { 
-                    'shrt_name': cidr.shrt_name,
+                    'shrt_name': response['Item']['shrt_name'],
                     'description': cidr.description,
+                    'in_use': cidr.in_use,
                     'cidr': response['Item']['cidr'],
                     'next_available_ip': response['Item']['next_available_ip'], 
                     'total_available_ips' : response['Item']['total_available_ips']

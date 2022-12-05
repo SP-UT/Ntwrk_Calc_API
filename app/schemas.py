@@ -33,8 +33,8 @@ class GetAllCIDRs(BaseModel):
     total_available_ips: int
 
 class UpdateCIDR(BaseModel):
-    shrt_name: str
-    description: str
+    description: Optional[str]
+    in_use: Optional[bool]
 
 class UpdateCIDROut(BaseModel):
     cidr_updated: bool
@@ -60,7 +60,6 @@ class NewNetworkOut(BaseModel):
     network: str
 
 class UpdateNetwork(BaseModel):
-    shrt_name: Optional[str]
     in_use: Optional[bool]
     ntwrk_id: Optional[str]
     meta_data: Optional[str]

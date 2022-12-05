@@ -73,7 +73,7 @@ async def update_cidr(shrt_name: str, network: schemas.UpdateNetwork, credential
     )
     if jwt_user['user_verified']:
         ddb_table = db.Table(f'{settings.ddb_table}')
-        ddb_resp = ddb_table.get_item(Key={'shrt_name': network.shrt_name})
+        ddb_resp = ddb_table.get_item(Key={'shrt_name': shrt_name})
         if 'Item' in ddb_resp:
             new_ntwrk_resp = ddb_table.put_item(
                     Item = { 
@@ -128,6 +128,44 @@ async def cidrs(credentials: HTTPAuthorizationCredentials= Depends(security), db
         response = table.scan()
         return (response['Items'])
 
+    else:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED,
+        detail="Invalid Credentials")
+
+@router.delete('/networks/{shrt_name}', status_code=status.HTTP_204_NO_CONTENT)
+async def del_network(shrt_name: str, credentials: HTTPAuthorizationCredentials= Depends(security), db: Session = Depends(db.initialize_db)):
+    jwt_user = cognito.validate_user_id(
+        token = credentials.credentials, 
+        region = f'{settings.region_name}', 
+        idp_pool = os.environ.get('COGNITO_POOL_ID'), 
+        client_id = os.environ.get('APP_CLIENT_ID')
+    )
+    if jwt_user['user_verified']:
+        table = db.Table(f'{settings.ddb_table}')
+        get_item = table.get_item(
+            Key = 
+                {
+                    'shrt_name': shrt_name
+                }
+            )
+        # if get_item['Item']['in_use']:
+        #     raise HTTPException(status.HTTP_412_PRECONDITION_FAILED,
+        #     detail=f"CIDR {shrt_name} is in use - CANNOT DELETE.")
+        if 'Item' in get_item:
+            if get_item['Item']['in_use']:
+                raise HTTPException(status.HTTP_412_PRECONDITION_FAILED,
+                detail=f"CIDR {shrt_name} is in use - CANNOT DELETE.")
+            else:
+                del_item = table.delete_item(
+                    Key = 
+                        {
+                            'shrt_name': shrt_name
+                        }
+                    )
+                return Response(status_code=status.HTTP_204_NO_CONTENT)
+        else: 
+            raise HTTPException(status.HTTP_404_NOT_FOUND,
+            detail="Not Found")
     else:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED,
         detail="Invalid Credentials")

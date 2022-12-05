@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 from datetime import datetime
 
 class HealthPage(BaseModel):
@@ -50,12 +50,19 @@ class NewNetwork(BaseModel):
     cidr_name: str
     subnet_mask: int
     description: str
+    in_use: Optional[bool]
+    ntwrk_id: Optional[str]
+    meta_data: Optional[str]
 
 class NewNetworkOut(BaseModel):
     shrt_name: str
     network: str
 
-class NetworkUsageStatus(BaseModel):
-    in_use: bool
-    ntwrk_id: str
-    
+class UpdateNetwork(BaseModel):
+    shrt_name: Optional[str]
+    in_use: Optional[bool]
+    ntwrk_id: Optional[str]
+    meta_data: Optional[str]
+
+class UpdateNetworkOut(BaseModel):
+    network_updated: bool

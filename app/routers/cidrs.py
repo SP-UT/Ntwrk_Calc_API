@@ -15,6 +15,9 @@ security = HTTPBearer()
 
 @router.post('/cidrs', status_code=status.HTTP_201_CREATED, response_model=schemas.NewCIDROut)
 async def cidrs(cidr: schemas.NewCIDR, credentials: HTTPAuthorizationCredentials= Depends(security), db: Session = Depends(db.initialize_db)):
+    if (' ' in cidr.shrt_name) == True:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST,
+        detail=f"{cidr.shrt_name} Should be a single word.")
     jwt_user = cognito.validate_user_id(
         token = credentials.credentials, 
         region = f'{settings.region_name}', 

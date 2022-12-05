@@ -66,3 +66,14 @@ class UpdateNetwork(BaseModel):
 
 class UpdateNetworkOut(BaseModel):
     network_updated: bool
+
+class GetAllNetworks(BaseModel):
+    shrt_name: str
+    date: str
+    description: str
+    total_ips: int
+    Information: Optional[str]
+    network: Optional[str]
+    in_use: Optional[bool]
+    ntwrk_id: Optional[str]
+    meta_data: Optional[str]

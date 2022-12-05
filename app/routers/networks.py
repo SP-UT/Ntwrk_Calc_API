@@ -94,3 +94,40 @@ async def update_cidr(shrt_name: str, network: schemas.UpdateNetwork, credential
     else:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED,
         detail="Invalid Credentials")
+
+@router.get('/networks/{shrt_name}', response_model=schemas.GetAllNetworks)
+async def get_cidr(shrt_name: str, credentials: HTTPAuthorizationCredentials= Depends(security), db: Session = Depends(db.initialize_db)):
+    jwt_user = cognito.validate_user_id(
+        token = credentials.credentials, 
+        region = f'{settings.region_name}', 
+        idp_pool = os.environ.get('COGNITO_POOL_ID'), 
+        client_id = os.environ.get('APP_CLIENT_ID')
+    )
+    if jwt_user['user_verified']:
+        table = db.Table(f'{settings.ddb_table}')
+        response = table.get_item(Key={'shrt_name': shrt_name})
+        if 'Item' in response:
+            return (response['Item'])
+        else: 
+            raise HTTPException(status.HTTP_404_NOT_FOUND,
+            detail="Not Found")
+    else:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED,
+        detail="Invalid Credentials")
+
+@router.get('/networks', response_model=List[schemas.GetAllNetworks])
+async def cidrs(credentials: HTTPAuthorizationCredentials= Depends(security), db: Session = Depends(db.initialize_db)):
+    jwt_user = cognito.validate_user_id(
+        token = credentials.credentials, 
+        region = f'{settings.region_name}', 
+        idp_pool = os.environ.get('COGNITO_POOL_ID'), 
+        client_id = os.environ.get('APP_CLIENT_ID')
+    )
+    if jwt_user['user_verified']:
+        table = db.Table(f'{settings.ddb_table}')
+        response = table.scan()
+        return (response['Items'])
+
+    else:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED,
+        detail="Invalid Credentials")

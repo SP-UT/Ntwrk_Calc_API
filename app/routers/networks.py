@@ -162,6 +162,7 @@ async def del_network(shrt_name: str, credentials: HTTPAuthorizationCredentials=
                             'shrt_name': shrt_name
                         }
                     )
+                #PENDING Recliaming Address spaces.
                 return Response(status_code=status.HTTP_204_NO_CONTENT)
         else: 
             raise HTTPException(status.HTTP_404_NOT_FOUND,

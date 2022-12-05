@@ -17,7 +17,7 @@ security = HTTPBearer()
 async def cidrs(cidr: schemas.NewCIDR, credentials: HTTPAuthorizationCredentials= Depends(security), db: Session = Depends(db.initialize_db)):
     if (' ' in cidr.shrt_name) == True:
         raise HTTPException(status.HTTP_400_BAD_REQUEST,
-        detail=f"{cidr.shrt_name} Should be a single word.")
+        detail=f"{cidr.shrt_name} Should be a contiguous string.")
     jwt_user = cognito.validate_user_id(
         token = credentials.credentials, 
         region = f'{settings.region_name}', 

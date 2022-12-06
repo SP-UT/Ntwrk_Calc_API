@@ -132,8 +132,8 @@ async def cidrs(credentials: HTTPAuthorizationCredentials= Depends(security), db
         raise HTTPException(status.HTTP_401_UNAUTHORIZED,
         detail="Invalid Credentials")
 
-@router.delete('/networks/{shrt_name}', status_code=status.HTTP_204_NO_CONTENT)
-async def del_network(shrt_name: str, credentials: HTTPAuthorizationCredentials= Depends(security), db: Session = Depends(db.initialize_db)):
+@router.delete('/networks', status_code=status.HTTP_204_NO_CONTENT)
+async def del_network(shrt_name: str, cidr_name: str, credentials: HTTPAuthorizationCredentials= Depends(security), db: Session = Depends(db.initialize_db)):
     jwt_user = cognito.validate_user_id(
         token = credentials.credentials, 
         region = f'{settings.region_name}', 
@@ -142,27 +142,38 @@ async def del_network(shrt_name: str, credentials: HTTPAuthorizationCredentials=
     )
     if jwt_user['user_verified']:
         table = db.Table(f'{settings.ddb_table}')
+        cidr_table = db.Table(f'{settings.cidr_table}')
+        cidr_resp = cidr_table.get_item(Key={'shrt_name': cidr_name})
         get_item = table.get_item(
             Key = 
                 {
                     'shrt_name': shrt_name
                 }
             )
-        # if get_item['Item']['in_use']:
-        #     raise HTTPException(status.HTTP_412_PRECONDITION_FAILED,
-        #     detail=f"CIDR {shrt_name} is in use - CANNOT DELETE.")
         if 'Item' in get_item:
             if get_item['Item']['in_use']:
                 raise HTTPException(status.HTTP_412_PRECONDITION_FAILED,
                 detail=f"CIDR {shrt_name} is in use - CANNOT DELETE.")
             else:
+                reclaimed_networks = cidr_resp['Item']['reclaimed_networks']
+                reclaimed_networks.append(get_item['Item']['network'])
                 del_item = table.delete_item(
                     Key = 
                         {
                             'shrt_name': shrt_name
                         }
                     )
-                #PENDING Recliaming Address spaces.
+                cidr_update_resp = cidr_table.put_item(
+                    Item = { 
+                            'shrt_name': cidr_resp['Item']['shrt_name'],
+                            'description': cidr_resp['Item']['description'],
+                            'cidr': cidr_resp['Item']['cidr'],
+                            'next_available_ip': cidr_resp['Item']['next_available_ip'], 
+                            'total_available_ips' : cidr_resp['Item']['total_available_ips'] + get_item['Item']['total_ips'],
+                            'in_use': cidr_resp['Item']['in_use'],
+                            'reclaimed_networks': reclaimed_networks
+                        }
+                    )
                 return Response(status_code=status.HTTP_204_NO_CONTENT)
         else: 
             raise HTTPException(status.HTTP_404_NOT_FOUND,

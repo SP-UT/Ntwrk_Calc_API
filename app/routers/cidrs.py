@@ -38,7 +38,8 @@ async def cidrs(cidr: schemas.NewCIDR, credentials: HTTPAuthorizationCredentials
                 'cidr': cidr.cidr,
                 'next_available_ip': f'{ip(cidr.cidr)[0]}', 
                 'total_available_ips' : ip(cidr.cidr).num_addresses,
-                'in_use': cidr.in_use
+                'in_use': cidr.in_use,
+                'reclaimed_networks': [cidr.reclaimed_networks]
                 }
             )
             return { 'cidr_created': True }
@@ -102,7 +103,8 @@ async def update_cidr(shrt_name: str, cidr: schemas.UpdateCIDR, credentials: HTT
                     'in_use': cidr.in_use,
                     'cidr': response['Item']['cidr'],
                     'next_available_ip': response['Item']['next_available_ip'], 
-                    'total_available_ips' : response['Item']['total_available_ips']
+                    'total_available_ips' : response['Item']['total_available_ips'],
+                    'reclaimed_networks': response['Item']['reclaimed_networks']
                     }
                 )
             return({"cidr_updated": True})

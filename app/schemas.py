@@ -24,6 +24,7 @@ class NewCIDR(BaseModel):
     description: str
     cidr: str
     in_use: Optional[bool] = False
+    reclaimed_networks: Optional[List] = None
 
 class GetAllCIDRs(BaseModel):
     shrt_name: str
@@ -31,10 +32,12 @@ class GetAllCIDRs(BaseModel):
     cidr: str
     next_available_ip: str
     total_available_ips: int
+    reclaimed_networks: Optional[List] = [ ]
 
 class UpdateCIDR(BaseModel):
     description: Optional[str]
     in_use: Optional[bool]
+    reclaimed_networks: Optional[List]
 
 class UpdateCIDROut(BaseModel):
     cidr_updated: bool

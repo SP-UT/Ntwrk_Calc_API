@@ -32,7 +32,7 @@ class GetAllCIDRs(BaseModel):
     cidr: str
     next_available_ip: str
     total_available_ips: int
-    reclaimed_networks: Optional[List] = [ ]
+    reclaimed_networks: Optional[List] = []
 
 class UpdateCIDR(BaseModel):
     description: Optional[str]

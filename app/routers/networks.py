@@ -26,7 +26,9 @@ async def new_ntwrks(new_ntwrk: schemas.NewNetwork, credentials: HTTPAuthorizati
             idp_pool = os.environ.get('COGNITO_POOL_ID'), 
             client_id = os.environ.get('APP_CLIENT_ID')
         )
+        print(jwt_user['user_verified'])
         if jwt_user['user_verified']:
+            print(jwt_user['user_verified'])
             ddb_table = db.Table(f'{settings.ddb_table}')
             ddb_resp = ddb_table.get_item(Key={'shrt_name': new_ntwrk.shrt_name})
             if 'Item' in ddb_resp:
@@ -55,13 +57,14 @@ async def new_ntwrks(new_ntwrk: schemas.NewNetwork, credentials: HTTPAuthorizati
                         'cidr': cidr_resp['Item']['cidr'],
                         'next_available_ip': f'{ip(network)[-1] + 1}', 
                         'total_available_ips' : cidr_resp['Item']['total_available_ips'] - ip(network).num_addresses,
-                        'in_use': True
+                        'in_use': True,
+                        'reclaimed_networks': cidr_resp['Item']['reclaimed_networks'] 
                         }
                     )
                 return { 'shrt_name': new_ntwrk.shrt_name,'network': network }
-            else:
-                raise HTTPException(status.HTTP_401_UNAUTHORIZED,
-                detail={ 'cidr_created': False })
+        else:
+            raise HTTPException(status.HTTP_401_UNAUTHORIZED,
+            detail={ 'cidr_created': False })
 
 @router.put('/networks/{shrt_name}', response_model=schemas.UpdateNetworkOut)
 async def update_cidr(shrt_name: str, network: schemas.UpdateNetwork, credentials: HTTPAuthorizationCredentials= Depends(security), db: Session = Depends(db.initialize_db)):
@@ -156,6 +159,8 @@ async def del_network(shrt_name: str, cidr_name: str, credentials: HTTPAuthoriza
                 detail=f"CIDR {shrt_name} is in use - CANNOT DELETE.")
             else:
                 reclaimed_networks = cidr_resp['Item']['reclaimed_networks']
+                if reclaimed_networks[0] == None:
+                    reclaimed_networks.remove(None)
                 reclaimed_networks.append(get_item['Item']['network'])
                 del_item = table.delete_item(
                     Key = 

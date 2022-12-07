@@ -37,7 +37,6 @@ class GetAllCIDRs(BaseModel):
 class UpdateCIDR(BaseModel):
     description: Optional[str]
     in_use: Optional[bool]
-    reclaimed_networks: Optional[List]
 
 class UpdateCIDROut(BaseModel):
     cidr_updated: bool
@@ -53,6 +52,15 @@ class NewNetwork(BaseModel):
     shrt_name: str
     cidr_name: str
     subnet_mask: int
+    description: str
+    in_use: Optional[bool]
+    ntwrk_id: Optional[str]
+    meta_data: Optional[str]
+
+class ReclaimNetwork(BaseModel):
+    shrt_name: str
+    cidr_name: str
+    ntwrk_cidr: str
     description: str
     in_use: Optional[bool]
     ntwrk_id: Optional[str]

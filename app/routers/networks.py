@@ -58,13 +58,64 @@ async def new_ntwrks(new_ntwrk: schemas.NewNetwork, credentials: HTTPAuthorizati
                         'next_available_ip': f'{ip(network)[-1] + 1}', 
                         'total_available_ips' : cidr_resp['Item']['total_available_ips'] - ip(network).num_addresses,
                         'in_use': True,
-                        'reclaimed_networks': cidr_resp['Item']['reclaimed_networks'] 
+                        'reclaimed_networks': cidr_resp['Item']['reclaimed_networks']
                         }
                     )
                 return { 'shrt_name': new_ntwrk.shrt_name,'network': network }
         else:
             raise HTTPException(status.HTTP_401_UNAUTHORIZED,
             detail={ 'cidr_created': False })
+
+@router.post('/networks/reclaim', status_code=status.HTTP_201_CREATED, response_model=schemas.NewNetworkOut)
+async def reclaim_ntwrk(new_ntwrk: schemas.ReclaimNetwork, credentials: HTTPAuthorizationCredentials= Depends(security), db: Session = Depends(db.initialize_db)):
+    jwt_user = cognito.validate_user_id(
+        token = credentials.credentials, 
+        region = f'{settings.region_name}', 
+        idp_pool = os.environ.get('COGNITO_POOL_ID'), 
+        client_id = os.environ.get('APP_CLIENT_ID')
+    )
+    if jwt_user['user_verified']:
+        cidr_table = db.Table(f'{settings.cidr_table}')
+        ddb_table = db.Table(f'{settings.ddb_table}')
+        cidr_resp = cidr_table.get_item(Key={'shrt_name': new_ntwrk.cidr_name})
+        ddb_resp = cidr_table.get_item(Key={'shrt_name': new_ntwrk.shrt_name})
+        reclaimed_networks = cidr_resp['Item']['reclaimed_networks']
+        if 'Item' in ddb_resp:
+            raise HTTPException(status.HTTP_409_CONFLICT,
+            detail=f"{new_ntwrk.shrt_name} Already Exists")
+        if 'Item' in cidr_resp:
+            if new_ntwrk.ntwrk_cidr in cidr_resp['Item']['reclaimed_networks']:
+                new_ntwrk_resp = ddb_table.put_item(
+                    Item = { 
+                    'shrt_name': new_ntwrk.shrt_name,
+                    'description': new_ntwrk.description,
+                    'network': new_ntwrk.ntwrk_cidr,
+                    'total_ips' : ip(new_ntwrk.ntwrk_cidr).num_addresses,
+                    'in_use' : new_ntwrk.in_use,
+                    'Information': new_ntwrk.meta_data,
+                    'ntwrk_id': new_ntwrk.ntwrk_id,
+                    'date': datetime.now().strftime("%Y-%m-%d")
+                    }
+                )
+                reclaimed_networks = reclaimed_networks.remove(new_ntwrk.ntwrk_cidr)
+                cidr_update_resp = cidr_table.put_item(
+                    Item = { 
+                        'shrt_name': cidr_resp['Item']['shrt_name'],
+                        'description': cidr_resp['Item']['description'],
+                        'cidr': cidr_resp['Item']['cidr'],
+                        'next_available_ip': cidr_resp['Item']['next_available_ip'], 
+                        'total_available_ips' : cidr_resp['Item']['total_available_ips'] - ip(new_ntwrk.ntwrk_cidr).num_addresses,
+                        'in_use': True,
+                        'reclaimed_networks': reclaimed_networks 
+                        }
+                    )
+                return { 'shrt_name': new_ntwrk.shrt_name,'network': new_ntwrk.ntwrk_cidr }
+        else: 
+            raise HTTPException(status.HTTP_404_NOT_FOUND,
+            detail="CIDR {cidr_name} Not Found")
+    else:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED,
+        detail={ 'cidr_created': False })
 
 @router.put('/networks/{shrt_name}', response_model=schemas.UpdateNetworkOut)
 async def update_cidr(shrt_name: str, network: schemas.UpdateNetwork, credentials: HTTPAuthorizationCredentials= Depends(security), db: Session = Depends(db.initialize_db)):
@@ -159,8 +210,8 @@ async def del_network(shrt_name: str, cidr_name: str, credentials: HTTPAuthoriza
                 detail=f"CIDR {shrt_name} is in use - CANNOT DELETE.")
             else:
                 reclaimed_networks = cidr_resp['Item']['reclaimed_networks']
-                if reclaimed_networks[0] == None:
-                    reclaimed_networks.remove(None)
+                if reclaimed_networks is None:
+                     reclaimed_networks = []
                 reclaimed_networks.append(get_item['Item']['network'])
                 del_item = table.delete_item(
                     Key = 
@@ -168,6 +219,7 @@ async def del_network(shrt_name: str, cidr_name: str, credentials: HTTPAuthoriza
                             'shrt_name': shrt_name
                         }
                     )
+                
                 cidr_update_resp = cidr_table.put_item(
                     Item = { 
                             'shrt_name': cidr_resp['Item']['shrt_name'],

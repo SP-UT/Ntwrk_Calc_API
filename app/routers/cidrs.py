@@ -39,7 +39,7 @@ async def cidrs(cidr: schemas.NewCIDR, credentials: HTTPAuthorizationCredentials
                 'next_available_ip': f'{ip(cidr.cidr)[0]}', 
                 'total_available_ips' : ip(cidr.cidr).num_addresses,
                 'in_use': cidr.in_use,
-                'reclaimed_networks': [cidr.reclaimed_networks]
+                'reclaimed_networks': cidr.reclaimed_networks
                 }
             )
             return { 'cidr_created': True }

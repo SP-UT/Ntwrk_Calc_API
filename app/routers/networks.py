@@ -80,11 +80,13 @@ async def reclaim_ntwrk(new_ntwrk: schemas.ReclaimNetwork, credentials: HTTPAuth
         cidr_resp = cidr_table.get_item(Key={'shrt_name': new_ntwrk.cidr_name})
         ddb_resp = cidr_table.get_item(Key={'shrt_name': new_ntwrk.shrt_name})
         reclaimed_networks = cidr_resp['Item']['reclaimed_networks']
+        if reclaimed_networks is None:
+            reclaimed_networks = []
         if 'Item' in ddb_resp:
             raise HTTPException(status.HTTP_409_CONFLICT,
             detail=f"{new_ntwrk.shrt_name} Already Exists")
         if 'Item' in cidr_resp:
-            if new_ntwrk.ntwrk_cidr in cidr_resp['Item']['reclaimed_networks']:
+            if new_ntwrk.ntwrk_cidr in reclaimed_networks:
                 new_ntwrk_resp = ddb_table.put_item(
                     Item = { 
                     'shrt_name': new_ntwrk.shrt_name,
@@ -219,7 +221,9 @@ async def del_network(shrt_name: str, cidr_name: str, credentials: HTTPAuthoriza
                             'shrt_name': shrt_name
                         }
                     )
-                
+                total_new_ips = cidr_resp['Item']['total_available_ips'] + get_item['Item']['total_ips']
+                if total_new_ips > ip(cidr_resp['Item']['cidr']).num_addresses:
+                    total_new_ips = ip(cidr_resp['Item']['cidr']).num_addresses
                 cidr_update_resp = cidr_table.put_item(
                     Item = { 
                             'shrt_name': cidr_resp['Item']['shrt_name'],

@@ -19,39 +19,25 @@ async def health(response: Response):
     idp = PoolExists()
     client_details = validate_client_id(os.environ.get('COGNITO_POOL_ID'), os.environ.get('APP_CLIENT_ID'))
     if cidr_table['table_exists'] and ddb_table['table_exists'] and idp['identity_setup_valid']:
-        return(
-            {
-                'name': "Ntwrk_Calc_API",
-                'subsystems': [
-                    {
-                        f'{settings.cidr_table}': cidr_table,
-                        f'{settings.ddb_table}': ddb_table,
-                        'Identity': [
-                                idp,
-                                client_details
-                            ]
-                    }
-                ],
-                'date': datetime.now(),
-                'status': 'Good'
-            }
-        )
+        stat = "Good"
+        response.status_code = status.HTTP_200_OK
     else:
-        response.status_code=status.HTTP_417_EXPECTATION_FAILED
-        return(
+        stat = "Check Dependencies"
+        response.status_code = status.HTTP_400_BAD_REQUEST
+    return(
+    {
+        'name': "Ntwrk_Calc_API",
+        'subsystems': [
             {
-                'name': "Ntwrk_Calc_API",
-                'subsystems': [
-                    {
-                        f'{settings.cidr_table}': cidr_table,
-                        f'{settings.ddb_table}': ddb_table,
-                        'Identity': [
-                                idp,
-                                client_details
-                            ]
-                    }
-                ],
-                'date': datetime.now(),
-                'status': 'Check Dependencies'
+                f'{settings.cidr_table}': cidr_table,
+                f'{settings.ddb_table}': ddb_table,
+                'Identity': [
+                        idp,
+                        client_details
+                    ]
             }
-        )
+        ],
+        'date': datetime.now(),
+        'status': stat
+    }
+)

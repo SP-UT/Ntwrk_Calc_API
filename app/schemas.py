@@ -57,6 +57,18 @@ class NewNetwork(BaseModel):
     ntwrk_id: Optional[str]
     meta_data: Optional[str]
 
+class BatchNetworkModel(BaseModel):
+    shrt_name: str
+    subnet_mask: int
+    description: str
+    in_use: Optional[bool]
+    ntwrk_id: Optional[str]
+    meta_data: Optional[str]
+
+class BatchNewNetwork(BaseModel):
+    cidr_name: str
+    network: List[BatchNetworkModel]
+
 class ReclaimNetwork(BaseModel):
     shrt_name: str
     cidr_name: str

@@ -22,10 +22,6 @@ async def startup_event():
     #     for row in csvr:
     #         create_user(poolid, row[0], row[1])    
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
 app.include_router(auth.router)
 app.include_router(cidrs.router)
 app.include_router(health.router)

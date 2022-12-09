@@ -23,7 +23,7 @@ async def health(response: Response):
         response.status_code = status.HTTP_200_OK
     else:
         stat = "Check Dependencies"
-        response.status_code = status.HTTP_400_BAD_REQUEST
+        response.status_code = status.HTTP_417_EXPECTATION_FAILED
     return(
         {
             'name': "Ntwrk_Calc_API",

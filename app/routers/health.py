@@ -25,9 +25,9 @@ async def health(response: Response):
         stat = "Check Dependencies"
         response.status_code = status.HTTP_400_BAD_REQUEST
     return(
-    {
-        'name': "Ntwrk_Calc_API",
-        'subsystems': [
+        {
+            'name': "Ntwrk_Calc_API",
+            'subsystems': [
                 {
                     f'{settings.cidr_table}': cidr_table,
                     f'{settings.ddb_table}': ddb_table,

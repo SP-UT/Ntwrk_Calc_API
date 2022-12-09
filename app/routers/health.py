@@ -28,16 +28,16 @@ async def health(response: Response):
     {
         'name': "Ntwrk_Calc_API",
         'subsystems': [
-            {
-                f'{settings.cidr_table}': cidr_table,
-                f'{settings.ddb_table}': ddb_table,
-                'Identity': [
-                        idp,
-                        client_details
-                    ]
-            }
-        ],
-        'date': datetime.now(),
-        'status': stat
-    }
-)
+                {
+                    f'{settings.cidr_table}': cidr_table,
+                    f'{settings.ddb_table}': ddb_table,
+                    'Identity': [
+                            idp,
+                            client_details
+                        ]
+                }
+            ],
+            'date': datetime.now(),
+            'status': stat
+        }
+    )

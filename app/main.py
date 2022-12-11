@@ -1,7 +1,7 @@
 import os, csv
 from fastapi import FastAPI
 from .db import initialize_db
-from .routers import auth, cidrs, health, networks
+from .routers import auth, cidrs, health, networks, batch
 from .models import generate_table, drop_table
 from .IdpSetup import UserPoolSetup, DelPoolSetup, create_app_client, create_user
 
@@ -26,6 +26,8 @@ app.include_router(auth.router)
 app.include_router(cidrs.router)
 app.include_router(health.router)
 app.include_router(networks.router)
+app.include_router(batch.router)
+
 
 
 @app.on_event("shutdown")

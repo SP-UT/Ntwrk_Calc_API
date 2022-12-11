@@ -67,7 +67,7 @@ class BatchNetworkModel(BaseModel):
 
 class BatchNewNetwork(BaseModel):
     cidr_name: str
-    network: List[BatchNetworkModel]
+    networks: List[BatchNetworkModel]
 
 class ReclaimNetwork(BaseModel):
     shrt_name: str

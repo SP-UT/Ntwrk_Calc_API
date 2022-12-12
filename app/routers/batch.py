@@ -29,11 +29,9 @@ async def new_ntwrks(new_ntwrk: schemas.BatchNewNetwork, credentials: HTTPAuthor
         resp_ntwrks = []
         for item in response['Items']:
             li_shrt.append(item['shrt_name'])
-        print(li_shrt)
         cidr_table = db.Table(f'{settings.cidr_table}')
         cidr_resp = cidr_table.get_item(Key={'shrt_name': new_ntwrk.cidr_name})
         total_cidr_ips = cidr_resp['Item']['total_available_ips']
-        print(cidr_resp['Item'])
         next_ip = cidr_resp['Item']['next_available_ip']
         for netwrk in new_ntwrk.networks:
             if (' ' in netwrk.shrt_name) == True:
@@ -71,9 +69,6 @@ async def new_ntwrks(new_ntwrk: schemas.BatchNewNetwork, credentials: HTTPAuthor
                 }
         )
         return (resp_ntwrks)
-                # print(net)
-                # print(next_ip)
-                # print(netwrk)
-                # print(date)
-                # print(total_ips)
-                # print(total_cidr_ips)
+    else:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED,
+        detail={ 'cidr_created': False })

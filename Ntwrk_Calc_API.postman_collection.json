@@ -93,7 +93,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"shrt_name\": \"class_C\",\n    \"description\": \"Primary Class C Private CIDR\",\n    \"cidr\": \"192.168.0.0/16\"\n}",
+					"raw": "{\n    \"shrt_name\": \"class_C\",\n    \"description\": \"Primary Class C Private CIDR\",\n    \"cidr\": \"192.168.0.0/16\",\n    \"in_use\": \"False\",\n    \"reclaimed_networks\": []\n}\n",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -184,7 +184,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"in_use\": \"False\",\n    \"description\": \"CIDR description\"\n}",
+					"raw": "{\n    \"in_use\": \"True\",\n    \"description\": \"CIDR description\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -266,7 +266,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"shrt_name\": \"IaC_VPC\",\n    \"cidr_name\": \"class_C\",\n    \"description\": \"IaC VPC in N. Virginia\",\n    \"subnet_mask\": 24,\n    \"in_use\": true\n}",
+					"raw": "{\n    \"shrt_name\": \"IaC_VPC3\",\n    \"cidr_name\": \"class_C\",\n    \"description\": \"IaC VPC in N. Virginia\",\n    \"subnet_mask\": 24,\n    \"in_use\": true,\n    \"ntwrk_id\": \"optional\",\n    \"meta_data\": \"optional\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -280,6 +280,43 @@
 					],
 					"path": [
 						"networks"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create New Reclaimed Network",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"shrt_name\": \"IaC_VPC\",\n    \"cidr_name\": \"class_A\",\n    \"description\": \"IaC VPC in N. Virginia\",\n    \"ntwrk_cidr\": \"10.0.0.0/24\",\n    \"in_use\": \"False\",\n    \"ntwrk_id\": \"optional\",\n    \"meta_data\": \"optional\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{NTWRK_CALC_API_ENDPOINT}}/networks/reclaim",
+					"host": [
+						"{{NTWRK_CALC_API_ENDPOINT}}"
+					],
+					"path": [
+						"networks",
+						"reclaim"
 					]
 				}
 			},
@@ -302,7 +339,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"in_use\": false\n}",
+					"raw": "{\n    \"in_use\": false,\n    \"ntwrk_id\": \"optional\",\n    \"meta_data\": \"optional\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -393,13 +430,59 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "{{NTWRK_CALC_API_ENDPOINT}}/networks/IaC_VPC",
+					"raw": "{{NTWRK_CALC_API_ENDPOINT}}/networks?shrt_name=IaC_VPC&cidr_name=class_A",
 					"host": [
 						"{{NTWRK_CALC_API_ENDPOINT}}"
 					],
 					"path": [
-						"networks",
-						"IaC_VPC"
+						"networks"
+					],
+					"query": [
+						{
+							"key": "shrt_name",
+							"value": "IaC_VPC"
+						},
+						{
+							"key": "cidr_name",
+							"value": "class_A"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Batch Create New Networks",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"cidr_name\": \"class_C\",\n    \"networks\": [\n        {\n            \"shrt_name\": \"VPC7\",\n            \"subnet_mask\": 24,\n            \"description\": \"VPC 7 Created for Batch Create Testing\",\n            \"in_use\": true,\n            \"ntwrk_id\": \"optional\",\n            \"meta_data\": \"optional\"\n        },\n        {\n            \"shrt_name\": \"VPC6\",\n            \"subnet_mask\": 24,\n            \"description\": \"VPC 6 Created for Batch Create Testing\",\n            \"in_use\": true,\n            \"ntwrk_id\": \"optional\",\n            \"meta_data\": \"optional\"\n        }\n        ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{NTWRK_CALC_API_ENDPOINT}}/batch/networks",
+					"host": [
+						"{{NTWRK_CALC_API_ENDPOINT}}"
+					],
+					"path": [
+						"batch",
+						"networks"
 					]
 				}
 			},

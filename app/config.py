@@ -17,9 +17,6 @@ class Settings(BaseSettings):
             "cidr_table": {
                 "env": "CIDR_TABLE"
             },
-            "auth_table": {
-                "env": "AUTH_TABLE"
-            },
             "region_name": {
                 "env": "REGION_NAME"
             },

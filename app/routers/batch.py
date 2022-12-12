@@ -22,6 +22,7 @@ async def new_ntwrks(new_ntwrk: schemas.BatchNewNetwork, credentials: HTTPAuthor
         idp_pool = os.environ.get('COGNITO_POOL_ID'), 
         client_id = os.environ.get('APP_CLIENT_ID')
     )
+    create_ntwrks = new_ntwrk
     if jwt_user['user_verified']:
         table = db.Table(f'{settings.ddb_table}')
         response = table.scan()
@@ -43,9 +44,10 @@ async def new_ntwrks(new_ntwrk: schemas.BatchNewNetwork, credentials: HTTPAuthor
             else:  
                 net = '%s%s%s' %(next_ip, str("/"), netwrk.subnet_mask) 
                 #TypeError: 'BatchNetworkModel' object does not support item assignment 
-                netwrk['total_ips'] = ip(net).num_addresses
-                netwrk['date'] = datetime.now().strftime("%Y-%m-%d")
+                #netwrk['total_ips'] = ip(net).num_addresses
+                #netwrk['date'] = datetime.now().strftime("%Y-%m-%d")
                 next_ip = f'{ip(net)[-1] + 1}'
                 print(netwrk)
                 print(net)
                 print(next_ip)
+                print(create_ntwrks)

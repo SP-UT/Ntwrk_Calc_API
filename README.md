@@ -51,6 +51,7 @@ The Client ID is available as `APP_CLIENT_ID` environment variable upon successf
 
 #### Cleanup
 The `shutdown` event of FASTAPI will delete the `DDB_TABLE`, `CIDR_TABLE` and the Cognito IDP environment setup.
+To ensure cleanup of resources - please uncomment the code in `@app.on_event("shutdown")` to delete resources in `main.py` file.
 
 #### Start the API
 ```

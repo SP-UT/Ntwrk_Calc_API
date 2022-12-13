@@ -9,7 +9,7 @@ from typing import List
 from ipaddress import IPv4Network as ip
 
 router = APIRouter(
-    tags=['Batch']
+    tags=['Batch Networks']
     )
 
 security = HTTPBearer()

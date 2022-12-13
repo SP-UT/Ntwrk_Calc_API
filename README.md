@@ -33,6 +33,11 @@ export REGION_NAME=[AWS REGION HERE]
 export AWS_ACCESS_KEY=[AWS ACCESS KEY HERE]
 export AWS_SECRET_ACCESS_KEY=[AWS SECRET ACCESS KEY HERE]
 ```
+If `@app.on_event("startup")` Cognito Pool and Dynamo DB Table creation code is commented out - please export the below environment variables.
+```
+export COGNITO_POOL_ID=[COGNITO POOL ID HERE]
+export APP_CLIENT_ID=[APP CLIENT ID HERE]
+```
 
 #### Setup Cognito IDP User Accounts
 File Setup and Required Account Information
